@@ -1,0 +1,25 @@
+import cocotb
+from cocotb.triggers import Timer
+
+@cocotb.test()
+async def tb_register16(dut):
+
+    ininput =   [0x0F0F, 0x5555, 0x5555, 0xAAAA]
+    inload  =   [1, 0, 1, 0]
+    outoutput = [0x0F0F, 0x0F0F, 0x5555, 0x5555]
+    
+    clock = Clock(dut.clock, len(ininput), units="ns")
+    await cocotb.start(clock.start())    
+
+    await FallingEdge(dut.clock)
+    for i in range(len(ininput)):
+        dut.input.value = ininput[i]
+        dut.load.value = inload[i]
+
+        await FallingEdge(dut.clock)
+
+        condition = (dut.output.value == outoutput[i])
+        if not condition:
+            dut._log.error("Expected value: " + "{0:016b}".format(outoutput[i]) + " Obtained value: " + str(dut.output.value) )
+            assert condition, "Error in test {0}!".format(i)
+
