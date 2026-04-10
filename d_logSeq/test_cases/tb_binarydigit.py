@@ -1,5 +1,6 @@
 import cocotb
-from cocotb.triggers import Timer
+from cocotb.triggers import Timer, FallingEdge
+from cocotb.clock import Clock
 
 
 @cocotb.test()
