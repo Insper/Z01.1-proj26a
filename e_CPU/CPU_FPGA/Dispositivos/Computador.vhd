@@ -21,13 +21,15 @@ entity Computador is
    );
    port(
         -- Sistema
-        CLOCK_50     : in    std_logic;
+        MAX10_CLK1_50: in    std_logic;
         RESET_N      : in    std_logic;
         LEDR         : out   std_logic_vector(9 downto 0);
         SW           : in    std_logic_vector(9 downto 0);
-		  GPIO  			: inout std_logic_vector(35 downto 0)
-		  --GPIO(26 to 35)    : out    std_logic_vector(9 downto 0)
+		KEY           : in    std_logic_vector(1 downto 0);
+		GPIO  			: inout std_logic_vector(35 downto 0)
+		--GPIO(26 to 35)    : out    std_logic_vector(9 downto 0)
        );
+
 end entity;
 
 
@@ -58,23 +60,22 @@ architecture logic of Computador is
 		port(
 		  CLK				: IN  STD_LOGIC;
 		  ADDRESS		: IN  STD_LOGIC_VECTOR (14 DOWNTO 0);
-		  
 		  --RAM
         INPUT			: IN  STD_LOGIC_VECTOR (15 DOWNTO 0);
         LOAD			: IN  STD_LOGIC ;
-        OUTPUT			: OUT STD_LOGIC_VECTOR (15 DOWNTO 0);
-		  
+        OUTPUT			: OUT STD_LOGIC_VECTOR (15 DOWNTO 0);	  
+
 		  --INPUTS/OUTPUTS
         SW  	: in std_logic_vector(9 downto 0);
-		  GPIN	: inout std_logic_vector(9 downto 0);
+		GPIN	: inout std_logic_vector(9 downto 0);
         LED 	: OUT std_logic_vector(9 downto 0);		  
-		  GPOUT 	: INOUT std_logic_vector(9 downto 0)
+		GPOUT 	: INOUT std_logic_vector(9 downto 0)
 			 );
 	end component;
 
   signal INPUT        : std_logic_vector(15 downto 0) := "1111111111111111";
   signal ADDRESS      : std_logic_vector(14 downto 0) := (others => '0') ; -- meio 00100101101010
-  signal LOAD         : std_logic := '0';
+  signal LOAD, clock  : std_logic := '0';
   signal GPOUT10		 : std_logic_vector(9 downto 0);
   signal GPIN10		 : std_logic_vector(9 downto 0);
 
@@ -86,15 +87,17 @@ architecture logic of Computador is
 
 begin
 
+clock <= MAX10_CLK1_50;
+--clock <= not KEY(0);	 	 
+
 GPIN10 <= GPIO(9 downto 0);
 GPOUT10 <= GPIO(35 downto 26);
 
-
 MAIN_CPU : CPU port map (
-    clock       => CLOCK_50,
+    clock       => clock,
     inM         => OUTPUT_RAM,
     instruction => instruction,
-    reset       => RST_CPU,
+    reset       => '0',
     outM        => INPUT,
     writeM      => LOAD,
     addressM    => ADDRESS,
@@ -103,12 +106,12 @@ MAIN_CPU : CPU port map (
 
 ROM32k : ROM port map (
     address	=> PC(14 downto 0),
-    clock	  => CLOCK_50,
+    clock	  => clock,
     q		    => INSTRUCTION
     );
 
 MEMORY_MAPED : MemoryIO port map (
-    CLK         => CLOCK_50,
+    CLK         => clock,
     ADDRESS		 => ADDRESS,
     INPUT       => INPUT,
     LOAD        => LOAD,
