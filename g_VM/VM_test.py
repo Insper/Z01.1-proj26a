@@ -61,8 +61,12 @@ def run_CPU(name="add", nTests=1, sTime=100):
     if os.path.isfile(mif):
         # simulate
         for test in range(0, int(nTests)):
-            ramIn = "tests/" + name + "/" + name +"{}".format(test)+ "_in.mif"
-            ramTest = "tests/" + name + "/" + name +"{}".format(test)+ "_tst.mif"
+            if name.endswith(".vm"):
+                ramIn = "tests/" + name[:-3] + "/" + name[:-3] +"{}".format(test)+ "_in.mif"
+                ramTest = "tests/" + name[:-3] + "/" + name[:-3] +"{}".format(test)+ "_tst.mif"
+            else:
+                ramIn = "tests/" + name + "/" + name +"{}".format(test)+ "_in.mif"
+                ramTest = "tests/" + name + "/" + name +"{}".format(test)+ "_tst.mif"
 
             RAM = [0] * (16*1024+4800+2)
             ROM = [0] * 32*1024
@@ -286,7 +290,7 @@ def test_1c_Div():
 def test_1d_loop():
     translatorFile(name="1d-loop")
     assemblerFile(name="1d-loop")
-    certo = run_CPU("1d-loop",1,1000)
+    certo = run_CPU("1d-loop",1,10000)
 
     if not certo:
         assert False
@@ -426,7 +430,7 @@ def test_Translator_SimplePushAdd():
     genJAR()
     translatorFile(name="SimplePushAdd.vm",jar = "VMtranslator/Z01-VMTranslator.jar", vm="/src/examples/")
     assemblerFile(name="SimplePushAdd.vm")
-    certo = run_CPU("SimplePushAdd",1,1000)
+    certo = run_CPU("SimplePushAdd.vm",1,1000)
 
     if not certo:
         assert False
@@ -436,7 +440,7 @@ def test_Translator_SimplePopTemp():
     genJAR()
     translatorFile(name="SimplePopTemp.vm",jar = "VMtranslator/Z01-VMTranslator.jar", vm="/src/examples/")
     assemblerFile(name="SimplePopTemp.vm")
-    certo = run_CPU("SimplePopTemp",1,1000)
+    certo = run_CPU("SimplePopTemp.vm",1,1000)
 
     if not certo:
         assert False
@@ -446,7 +450,7 @@ def test_Translator_SimpleAnd():
     genJAR()
     translatorFile(name="SimpleAnd.vm",jar = "VMtranslator/Z01-VMTranslator.jar", vm="/src/examples/")
     assemblerFile(name="SimpleAnd.vm")
-    certo = run_CPU("SimpleAnd",1,1000)
+    certo = run_CPU("SimpleAnd.vm",1,1000)
 
     if not certo:
         assert False
@@ -456,7 +460,7 @@ def test_Translator_SimpleEq():
     genJAR()
     translatorFile(name="SimpleEq.vm",jar = "VMtranslator/Z01-VMTranslator.jar", vm="/src/examples/")
     assemblerFile(name="SimpleEq.vm")
-    certo = run_CPU("SimpleEq",1,1000)
+    certo = run_CPU("SimpleEq.vm",1,1000)
 
     if not certo:
         assert False
@@ -466,7 +470,7 @@ def test_Translator_SimpleGt():
     genJAR()
     translatorFile(name="SimpleGt.vm",jar = "VMtranslator/Z01-VMTranslator.jar", vm="/src/examples/")
     assemblerFile(name="SimpleGt.vm")
-    certo = run_CPU("SimpleGt",1,1000)
+    certo = run_CPU("SimpleGt.vm",1,1000)
 
     if not certo:
         assert False
@@ -476,7 +480,7 @@ def test_Translator_SimpleLt():
     genJAR()
     translatorFile(name="SimpleLt.vm",jar = "VMtranslator/Z01-VMTranslator.jar", vm="/src/examples/")
     assemblerFile(name="SimpleLt.vm")
-    certo = run_CPU("SimpleLt",1,1000)
+    certo = run_CPU("SimpleLt.vm",1,1000)
 
     if not certo:
         assert False
@@ -486,7 +490,7 @@ def test_Translator_SimpleNeg():
     genJAR()
     translatorFile(name="SimpleNeg.vm",jar = "VMtranslator/Z01-VMTranslator.jar", vm="/src/examples/")
     assemblerFile(name="SimpleNeg.vm")
-    certo = run_CPU("SimpleNeg",1,1000)
+    certo = run_CPU("SimpleNeg.vm",1,1000)
 
     if not certo:
         assert False
@@ -496,7 +500,7 @@ def test_Translator_SimpleNot():
     genJAR()
     translatorFile(name="SimpleNot.vm",jar = "VMtranslator/Z01-VMTranslator.jar", vm="/src/examples/")
     assemblerFile(name="SimpleNot.vm")
-    certo = run_CPU("SimpleNot",1,1000)
+    certo = run_CPU("SimpleNot.vm",1,1000)
 
     if not certo:
         assert False
@@ -506,7 +510,7 @@ def test_Translator_SimpleOr():
     genJAR()
     translatorFile(name="SimpleOr.vm",jar = "VMtranslator/Z01-VMTranslator.jar", vm="/src/examples/")
     assemblerFile(name="SimpleOr.vm")
-    certo = run_CPU("SimpleOr",1,1000)
+    certo = run_CPU("SimpleOr.vm",1,1000)
 
     if not certo:
         assert False
